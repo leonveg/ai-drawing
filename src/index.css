@@ -113,3 +113,20 @@ body {
 .animate-slideDown {
   animation: slideDown 0.3s ease-in-out;
 }
+
+.testimonials-swiper .swiper-wrapper {
+  transition-timing-function: linear !important;
+}
+
+.testimonials-swiper .swiper-slide {
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.testimonials-swiper .swiper-slide-active {
+  opacity: 1;
+}
+
+.testimonials-swiper .swiper-slide:hover {
+  opacity: 1;
+}
