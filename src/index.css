@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #B8860B;
+  --secondary: #2C2927;
+}
+
+.dark {
+  --bg-primary: #1C1917;
+  --bg-secondary: #2C2927;
+  --text-primary: #ffffff;
+  --text-secondary: #9CA3AF;
+}
+
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #F3F4F6;
+  --text-primary: #1F2937;
+  --text-secondary: #4B5563;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Playfair Display", serif;
+  overflow-x: hidden;
+}
+
+.british-heading {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+}
+
+.british-accent {
+  color: var(--primary);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-secondary);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pointer-events-none {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.british-button {
+  @apply px-6 py-2 border-2 border-amber-700 text-amber-700 hover:bg-amber-700 hover:text-white transition-all duration-300 rounded-none;
+}
+
+.british-nav-link {
+  @apply text-lg font-serif hover:text-amber-700 transition-colors duration-300;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-in-out;
+}
