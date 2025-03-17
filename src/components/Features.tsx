@@ -35,25 +35,44 @@ const Features = () => {
     }
   ];
 
-  return (
-    <section id="features" className="max-w-7xl mx-auto px-4 py-16 scroll-mt-20">
-      <h2 className="text-3xl font-bold text-center mb-4">Raphael AI 的主要功能</h2>
-      <p className="text-center text-gray-400 mb-12">体验下一代 AI 图像生成 - 强大、免费且注重隐私。</p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {features.map((feature, index) => (
-          <div 
-            key={index} 
-            className="p-6 rounded-lg bg-[#2C2927] transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
+return (
+  <section id="features" className="max-w-7xl mx-auto px-4 py-16 scroll-mt-20">
+    <h2
+      className="text-3xl font-bold text-center mb-4"
+      style={{ color: 'var(--text-primary)' }}
+    >
+      Raphael AI 的主要功能
+    </h2>
+    <p className="text-center mb-12" style={{ color: 'var(--text-secondary)' }}>
+      体验下一代 AI 图像生成 - 强大、免费且注重隐私。
+    </p>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {features.map((feature, index) => (
+        <div
+          key={index}
+          className="p-6 rounded-lg transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
+          style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderColor: 'var(--border-color)',
+            border: '1px solid var(--border-color)',
+          }}
+        >
+          <div className="mb-4">{feature.icon}</div>
+          <h3
+            className="text-xl font-semibold mb-2"
+            style={{ color: 'var(--text-primary)' }}
           >
-            <div className="mb-4">{feature.icon}</div>
-            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-            <p className="text-gray-400">{feature.description}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+            {feature.title}
+          </h3>
+          <p style={{ color: 'var(--text-secondary)' }}>
+            {feature.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+);
 };
 
 export default Features;

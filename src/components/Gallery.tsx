@@ -101,26 +101,28 @@ const Gallery = () => {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-16">
-      <h2 className="text-3xl font-bold text-center mb-8">寻找灵感</h2>
-      <p className="text-center text-gray-400 mb-12">
-        发现其他用户使用 Raphael 创作的精彩作品
-      </p>
-      <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className={`${image.aspectRatio} break-inside-avoid rounded-lg overflow-hidden`}
-          >
-            <img
-              src={image.url}
-              alt={`Gallery image ${index + 1}`}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        ))}
-      </div>
-    </section>
+    <>
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-8">寻找灵感</h2>
+        <p className="text-center text-gray-400 mb-12">
+          发现其他用户使用 Raphael 创作的精彩作品
+        </p>
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className={`${image.aspectRatio} break-inside-avoid rounded-lg overflow-hidden`}
+            >
+              <img
+                src={image.url}
+                alt={`Gallery image ${index + 1}`}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 };
 

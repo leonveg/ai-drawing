@@ -84,13 +84,26 @@ const Testimonials = () => {
   return (
     <section className="py-12 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">
+        <h2
+          className="text-3xl font-bold text-center mb-8"
+          style={{ color: 'var(--text-primary)' }}
+        >
           用户对 Raphael AI 的评价
         </h2>
 
-        {/* 添加渐变遮罩 */}
-        <div className="absolute left-0 top-[80px] w-[20%] h-[calc(100%-80px)] bg-gradient-to-r from-[#1C1917] to-transparent z-10"></div>
-        <div className="absolute right-0 top-[80px] w-[20%] h-[calc(100%-80px)] bg-gradient-to-l from-[#1C1917] to-transparent z-10"></div>
+        {/* 渐变遮罩 - 使用主题变量 */}
+        <div
+          className="absolute left-0 top-[80px] w-[20%] h-[calc(100%-80px)] z-10"
+          style={{
+            background: `linear-gradient(to right, var(--bg-primary), transparent)`,
+          }}
+        ></div>
+        <div
+          className="absolute right-0 top-[80px] w-[20%] h-[calc(100%-80px)] z-10"
+          style={{
+            background: `linear-gradient(to left, var(--bg-primary), transparent)`,
+          }}
+        ></div>
 
         <Swiper
           modules={[Autoplay]}
@@ -107,16 +120,32 @@ const Testimonials = () => {
         >
           {[...testimonials, ...testimonials].map((testimonial, index) => (
             <SwiperSlide key={index} className="!w-[400px]">
-              <div className="bg-[#2C2927] p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105">
-                <p className="text-lg text-gray-300 mb-4 line-clamp-4">
+              <div
+                className="p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"
+                style={{
+                  backgroundColor: 'var(--bg-secondary)',
+                  borderColor: 'var(--border-color)',
+                  border: '1px solid var(--border-color)',
+                }}
+              >
+                <p
+                  className="text-lg mb-4 line-clamp-4"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
                   {testimonial.text}
                 </p>
                 <div className="flex items-center">
                   <div className="mr-4">
-                    <div className="text-xl font-bold text-white">
+                    <div
+                      className="text-xl font-bold"
+                      style={{ color: 'var(--text-primary)' }}
+                    >
                       {testimonial.name}
                     </div>
-                    <div className="text-sm text-gray-400">
+                    <div
+                      className="text-sm"
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
                       {testimonial.role}
                     </div>
                   </div>
@@ -124,8 +153,8 @@ const Testimonials = () => {
                     {Array.from({ length: testimonial.rating }).map((_, i) => (
                       <svg
                         key={i}
-                        className="w-5 h-5 text-amber-500"
-                        fill="currentColor"
+                        className="w-5 h-5"
+                        fill="var(--accent-primary)"
                         viewBox="0 0 20 20"
                       >
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.396 2.47a1 1 0 00-.364 1.118l1.286 3.97c.3.921-.755 1.688-1.54 1.118l-3.396-2.47a1 1 0 00-1.176 0l-3.396 2.47c-.784.57-1.838-.197-1.54-1.118l1.286-3.97a1 1 0 00-.364-1.118L2.34 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />

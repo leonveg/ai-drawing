@@ -20,24 +20,43 @@ const FAQ = () => {
     }
   ];
 
-  return (
-    <section className="max-w-4xl mx-auto px-4 py-16">
-      <h2 className="text-3xl font-bold text-center mb-4">常见问题解答</h2>
-      <p className="text-center text-gray-400 mb-12">还有其他问题？请发邮件至 support@raphael.app</p>
-      
-      <div className="space-y-6">
-        {faqs.map((faq, index) => (
-          <div key={index} className="p-6 rounded-lg bg-[#2C2927]">
-            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-              <span className="text-amber-500">{index + 1}</span>
-              {faq.question}
-            </h3>
-            <p className="text-gray-400">{faq.answer}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+return (
+  <section className="max-w-4xl mx-auto px-4 py-16">
+    <h2
+      className="text-3xl font-bold text-center mb-4"
+      style={{ color: 'var(--text-primary)' }}
+    >
+      常见问题解答
+    </h2>
+    <p className="text-center mb-12" style={{ color: 'var(--text-secondary)' }}>
+      还有其他问题？请发邮件至 support@raphael.app
+    </p>
+
+    <div className="space-y-6">
+      {faqs.map((faq, index) => (
+        <div
+          key={index}
+          className="p-6 rounded-lg border transition-colors"
+          style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderColor: 'var(--border-color)',
+          }}
+        >
+          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'var(--accent-text)' }}
+            >
+              {index + 1}
+            </span>
+            <span style={{ color: 'var(--text-primary)' }}>{faq.question}</span>
+          </h3>
+          <p style={{ color: 'var(--text-secondary)' }}>{faq.answer}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+);
 };
 
 export default FAQ;
