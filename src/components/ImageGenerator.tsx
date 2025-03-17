@@ -6,6 +6,9 @@ const ImageGenerator = () => {
   const [showNegativePrompt, setShowNegativePrompt] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -59,15 +62,108 @@ const ImageGenerator = () => {
   const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
-  const handleGenerate = () => {
-    // 模拟生成图片
-    const mockGeneratedImages = [
-      'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=500&h=500&fit=crop',
-    ];
-    setGeneratedImages(mockGeneratedImages);
+
+  // 模拟生成图片
+  // const handleGenerate = () => {
+  //   const mockGeneratedImages = [
+  //     'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=500&h=500&fit=crop',
+  //     'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=500&h=500&fit=crop',
+  //     'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=500&h=500&fit=crop',
+  //     'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=500&h=500&fit=crop',
+  //   ];
+  //   setGeneratedImages(mockGeneratedImages);
+  // };
+
+  const handleGenerate = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('https://api.us1.bfl.ai/v1/flux-pro-1.1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-key': '2fc3796f-ff94-407a-803b-8728f9690fc2',
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          width: 1024,
+          height: 768,
+          prompt_upsampling: false,
+          safety_tolerance: 2,
+          output_format: 'jpeg',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate image');
+      }
+
+      const data = await response.json();
+      const pollingUrl = data.polling_url;
+
+      // Poll for results
+      const pollResult = async () => {
+        const resultResponse = await fetch(pollingUrl);
+        const resultData = await resultResponse.json();
+
+        if (resultData.result && resultData.result.sample) {
+          // Update state with the generated image URL
+          setGeneratedImages([resultData.result.sample]);
+        } else {
+          // If result is not ready, poll again after 1 second
+          setTimeout(pollResult, 1000);
+        }
+      };
+
+      // Start polling
+      await pollResult();
+    } catch (error) {
+      console.error('Error generating images:', error);
+      // Add proper error handling here
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const handleDownload = (
+  //   imageUrl: string,
+  //   fileName: string = 'generated-image.jpg'
+  // ) => {
+  //   const link = document.createElement('a');
+  //   link.href = imageUrl;
+  //   link.download = fileName;
+  //   link.target = '_blank'; // 添加 target 属性
+  //   link.rel = 'noopener noreferrer'; // 添加安全属性
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
+  const handleDownload = async (
+    imageUrl: string,
+    fileName: string = 'generated-image.jpg'
+  ) => {
+    try {
+      const response = await fetch(imageUrl, {
+        mode: 'cors',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // 如果直接下载失败，回退到在新窗口打开
+      window.open(imageUrl, '_blank');
+    }
   };
 
   return (
@@ -83,10 +179,17 @@ const ImageGenerator = () => {
             </label>
             {/* Text Input Area */}
             <div className="mb-4">
+              {/* <textarea
+                className="w-full min-h-[120px] bg-[#1C1917] border border-gray-700 rounded-lg p-4 text-white outline-none resize-none transition-all focus:border-amber-500"
+                placeholder="你想看到什么？"
+                rows={3}
+              /> */}
               <textarea
                 className="w-full min-h-[120px] bg-[#1C1917] border border-gray-700 rounded-lg p-4 text-white outline-none resize-none transition-all focus:border-amber-500"
                 placeholder="你想看到什么？"
                 rows={3}
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
               />
             </div>
 
@@ -237,21 +340,81 @@ const ImageGenerator = () => {
         </div>
       </div>
 
-      {/* Generated Images */}
-      {generatedImages.length > 0 && (
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 animate-fadeIn">
-          {generatedImages.map((image, index) => (
-            <div
-              key={index}
-              className="aspect-square rounded-lg overflow-hidden transform hover:scale-105 transition-transform"
-            >
-              <img
-                src={image}
-                alt={`Generated image ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
+      {/* Generated Images Section */}
+      <div className="mt-8">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-amber-500 border-t-transparent"></div>
+          </div>
+        ) : (
+          generatedImages.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+              {generatedImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="aspect-square rounded-xl overflow-hidden group relative"
+                >
+                  <img
+                    src={image}
+                    alt={`Generated image ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100">
+                    <button
+                      onClick={() => setSelectedImage(image)}
+                      className="bg-white text-black px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+                    >
+                      预览
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleDownload(
+                          image,
+                          `generated-image-${index + 1}.jpg`
+                        )
+                      }
+                      className="bg-amber-500 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors"
+                    >
+                      下载
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )
+        )}
+      </div>
+
+      {/* Preview Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 backdrop-blur-sm"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="absolute top-4 right-4 flex gap-4">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDownload(selectedImage);
+              }}
+              className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors"
+            >
+              下载图片
+            </button>
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="bg-white/10 text-white p-2 rounded-lg hover:bg-white/20 transition-colors"
+            >
+              <X size={24} />
+            </button>
+          </div>
+          <div className="h-full w-full flex items-center justify-center p-8">
+            <img
+              src={selectedImage}
+              alt="Preview"
+              className="max-w-[90%] max-h-[90vh] object-contain rounded-lg"
+            />
+          </div>
         </div>
       )}
     </section>
